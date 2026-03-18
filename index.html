@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>3D 摇骰子</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Three.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+</head>
+<body>
+    <!-- 3D 场景容器 -->
+    <div id="canvas-container"></div>
+    
+    <!-- 底部操作区 -->
+    <div class="controls">
+        <!-- 摇按钮 -->
+        <button id="roll-btn" class="roll-btn">
+            <span class="roll-text">摇</span>
+        </button>
+        
+        <!-- 设置按钮 -->
+        <button id="settings-btn" class="settings-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- 设置面板 -->
+    <div id="settings-modal" class="settings-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">设置</h2>
+            
+            <!-- 骰子数量 -->
+            <div class="setting-item">
+                <label class="setting-label">骰子数量</label>
+                <div class="dice-count-control">
+                    <button id="decrease-btn" class="count-btn">-</button>
+                    <span id="dice-count" class="count-value">5</span>
+                    <button id="increase-btn" class="count-btn">+</button>
+                </div>
+            </div>
+            
+            <!-- 音效开关 -->
+            <div class="setting-item">
+                <label class="setting-label">音效</label>
+                <label class="switch">
+                    <input type="checkbox" id="sound-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <!-- 屏幕常亮 -->
+            <div class="setting-item">
+                <label class="setting-label">屏幕常亮</label>
+                <label class="switch">
+                    <input type="checkbox" id="keep-awake">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <!-- 关闭按钮 -->
+            <button id="close-modal" class="close-btn">完成</button>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="js/audio.js"></script>
+    <script src="js/dice.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
