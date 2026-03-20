@@ -176,56 +176,81 @@ Page({
   },
 
   generateProceduralBackgroundTexture() {
-    const size = 320
+    const size = 512
 
     try {
       const c = wx.createOffscreenCanvas({ type: '2d', width: size, height: size })
       const ctx = c.getContext('2d')
 
+      // 基础深绿色绒布底色
       const base = ctx.createLinearGradient(0, 0, size, size)
-      base.addColorStop(0, '#1d4c31')
-      base.addColorStop(0.5, '#12331f')
-      base.addColorStop(1, '#081408')
+      base.addColorStop(0, '#1a4a2e')
+      base.addColorStop(0.5, '#0f3d22')
+      base.addColorStop(1, '#082814')
       ctx.fillStyle = base
       ctx.fillRect(0, 0, size, size)
 
-      for (let i = 0; i < 1200; i++) {
+      // 第一层：细密绒毛纹理 - 使用深绿色系，不是白色气泡
+      ctx.globalCompositeOperation = 'overlay'
+      
+      // 垂直纤维
+      for (let i = 0; i < 800; i++) {
         const x = Math.random() * size
         const y = Math.random() * size
-        const alpha = 0.012 + Math.random() * 0.024
-        const radius = 0.6 + Math.random() * 1.8
-        ctx.beginPath()
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`
-        ctx.arc(x, y, radius, 0, Math.PI * 2)
-        ctx.fill()
-      }
-
-      for (let i = 0; i < 220; i++) {
-        const x = Math.random() * size
-        const y = Math.random() * size
-        const length = 4 + Math.random() * 8
+        const length = 3 + Math.random() * 6
+        const alpha = 0.03 + Math.random() * 0.04
+        const isLight = Math.random() > 0.5
         ctx.save()
         ctx.translate(x, y)
-        ctx.rotate(Math.random() * Math.PI)
-        ctx.fillStyle = `rgba(0,0,0,${0.018 + Math.random() * 0.02})`
-        ctx.fillRect(-length / 2, -0.5, length, 1)
+        ctx.rotate((Math.random() - 0.5) * 0.3) // 轻微倾斜
+        ctx.fillStyle = isLight 
+          ? `rgba(40, 100, 60, ${alpha})`  // 浅绿纤维
+          : `rgba(5, 30, 15, ${alpha})`    // 深绿纤维
+        ctx.fillRect(-0.3, -length / 2, 0.6, length)
         ctx.restore()
       }
 
-      const vignette = ctx.createRadialGradient(size / 2, size / 2, size * 0.12, size / 2, size / 2, size * 0.7)
-      vignette.addColorStop(0, 'rgba(255,255,255,0.05)')
-      vignette.addColorStop(0.6, 'rgba(255,255,255,0)')
-      vignette.addColorStop(1, 'rgba(0,0,0,0.18)')
-      ctx.fillStyle = vignette
+      // 第二层：交叉绒毛 - 更细更密
+      for (let i = 0; i < 600; i++) {
+        const x = Math.random() * size
+        const y = Math.random() * size
+        const length = 2 + Math.random() * 4
+        const alpha = 0.02 + Math.random() * 0.03
+        ctx.save()
+        ctx.translate(x, y)
+        ctx.rotate(Math.PI / 2 + (Math.random() - 0.5) * 0.5)
+        ctx.fillStyle = `rgba(20, 70, 40, ${alpha})`
+        ctx.fillRect(-0.25, -length / 2, 0.5, length)
+        ctx.restore()
+      }
+
+      // 第三层：极细的随机纹理，增加绒布感
+      ctx.globalCompositeOperation = 'source-over'
+      for (let i = 0; i < 400; i++) {
+        const x = Math.random() * size
+        const y = Math.random() * size
+        const alpha = 0.015 + Math.random() * 0.025
+        ctx.fillStyle = `rgba(15, 50, 28, ${alpha})`
+        ctx.fillRect(x, y, 1, 1)
+      }
+
+      // 柔光晕效果 - 模拟绒布的柔软质感（不是气泡）
+      const softGlow = ctx.createRadialGradient(size / 2, size / 2, size * 0.2, size / 2, size / 2, size * 0.8)
+      softGlow.addColorStop(0, 'rgba(30, 90, 50, 0.08)')
+      softGlow.addColorStop(0.5, 'rgba(20, 70, 40, 0.04)')
+      softGlow.addColorStop(1, 'rgba(5, 30, 15, 0.12)')
+      ctx.fillStyle = softGlow
       ctx.fillRect(0, 0, size, size)
 
       this.backgroundTexture = c
     } catch (e) {
-      this.backgroundPatternSeed = Array.from({ length: 180 }, () => ({
+      // 简化版纹理数据
+      this.backgroundPatternSeed = Array.from({ length: 300 }, () => ({
         x: Math.random(),
         y: Math.random(),
-        r: 0.8 + Math.random() * 1.6,
-        a: 0.012 + Math.random() * 0.02
+        r: 0.5 + Math.random() * 1.2,
+        a: 0.008 + Math.random() * 0.012,
+        angle: Math.random() * Math.PI
       }))
     }
   },
@@ -481,11 +506,17 @@ Page({
       this.drawCoverImage(ctx, this.backgroundTexture, w, h)
       ctx.restore()
     } else if (this.backgroundPatternSeed.length) {
+      // 绘制绒毛纹理而非白色气泡
       this.backgroundPatternSeed.forEach((point) => {
-        ctx.fillStyle = `rgba(255,255,255,${point.a})`
-        ctx.beginPath()
-        ctx.arc(point.x * w, point.y * h, point.r, 0, Math.PI * 2)
-        ctx.fill()
+        const isLight = Math.random() > 0.5
+        ctx.fillStyle = isLight
+          ? `rgba(40, 100, 60, ${point.a})`
+          : `rgba(10, 40, 22, ${point.a})`
+        ctx.save()
+        ctx.translate(point.x * w, point.y * h)
+        ctx.rotate(point.angle || 0)
+        ctx.fillRect(-0.4, -point.r, 0.8, point.r * 2)
+        ctx.restore()
       })
     }
 
