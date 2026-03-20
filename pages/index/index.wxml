@@ -1,0 +1,39 @@
+<canvas type="2d" id="gameCanvas" class="game-canvas"></canvas>
+
+<view class="controls">
+  <button class="roll-btn {{isRolling ? 'rolling' : ''}}" bindtap="onRollTap">
+    <view class="btn-inner"></view>
+    <text class="roll-text">摇</text>
+  </button>
+  
+  <button class="settings-btn" bindtap="onSettingsTap">
+    <image class="settings-icon" src="/assets/settings.svg" mode="aspectFit" />
+  </button>
+</view>
+
+<view class="settings-modal {{showSettings ? 'active' : ''}}" bindtap="onModalBgTap">
+  <view class="modal-content" catchtap="onModalContentTap">
+    <text class="modal-title">设置</text>
+    
+    <view class="setting-item">
+      <text class="setting-label">骰子数量</text>
+      <view class="dice-count-control">
+        <button class="count-btn" bindtap="onDecreaseCount">-</button>
+        <text class="count-value">{{diceCount}}</text>
+        <button class="count-btn" bindtap="onIncreaseCount">+</button>
+      </view>
+    </view>
+    
+    <view class="setting-item">
+      <text class="setting-label">音效</text>
+      <switch checked="{{soundEnabled}}" bindchange="onSoundChange" color="#39ff14" />
+    </view>
+    
+    <view class="setting-item">
+      <text class="setting-label">屏幕常亮</text>
+      <switch checked="{{keepAwake}}" bindchange="onKeepAwakeChange" color="#39ff14" />
+    </view>
+    
+    <button class="close-btn" bindtap="onCloseSettings">完成</button>
+  </view>
+</view>

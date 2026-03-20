@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#1a472a",
+    "navigationBarTitleText": "3D摇骰子",
+    "navigationBarTextStyle": "white",
+    "navigationStyle": "custom"
+  },
+  "requiredBackgroundModes": ["audio"],
+  "lazyCodeLoading": "requiredComponents"
+}
