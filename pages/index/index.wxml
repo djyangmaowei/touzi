@@ -7,7 +7,9 @@
   </button>
   
   <button class="settings-btn" bindtap="onSettingsTap">
-    <image class="settings-icon" src="/assets/settings.svg" mode="aspectFit" />
+    <view class="settings-btn-inner">
+      <image class="settings-icon" src="/assets/settings.svg" mode="aspectFit" />
+    </view>
   </button>
 </view>
 

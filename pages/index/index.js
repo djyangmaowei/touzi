@@ -158,6 +158,24 @@ Page({
   },
 
   generateBackgroundTexture() {
+    if (this.canvas && typeof this.canvas.createImage === 'function') {
+      const image = this.canvas.createImage()
+      image.onload = () => {
+        this.backgroundTexture = image
+        this.draw()
+      }
+      image.onerror = () => {
+        this.generateProceduralBackgroundTexture()
+        this.draw()
+      }
+      image.src = '/assets/felt-texture.png'
+      return
+    }
+
+    this.generateProceduralBackgroundTexture()
+  },
+
+  generateProceduralBackgroundTexture() {
     const size = 320
 
     try {
@@ -449,21 +467,18 @@ Page({
   },
 
   drawBackground(ctx, w, h) {
-    const gradient = ctx.createRadialGradient(w * 0.5, h * 0.42, 0, w * 0.5, h * 0.5, Math.max(w, h) * 0.8)
-    gradient.addColorStop(0, '#1a472a')
-    gradient.addColorStop(0.58, '#0d2513')
-    gradient.addColorStop(1, '#040b04')
+    const gradient = ctx.createLinearGradient(0, 0, 0, h)
+    gradient.addColorStop(0, '#143521')
+    gradient.addColorStop(0.2, '#184229')
+    gradient.addColorStop(0.6, '#0f311e')
+    gradient.addColorStop(1, '#082012')
     ctx.fillStyle = gradient
     ctx.fillRect(0, 0, w, h)
 
     if (this.backgroundTexture) {
       ctx.save()
-      ctx.globalAlpha = 0.5
-      for (let x = -40; x < w + 40; x += 160) {
-        for (let y = -40; y < h + 40; y += 160) {
-          ctx.drawImage(this.backgroundTexture, x, y, 160, 160)
-        }
-      }
+      ctx.globalAlpha = 0.42
+      this.drawCoverImage(ctx, this.backgroundTexture, w, h)
       ctx.restore()
     } else if (this.backgroundPatternSeed.length) {
       this.backgroundPatternSeed.forEach((point) => {
@@ -474,11 +489,69 @@ Page({
       })
     }
 
-    const stageGlow = ctx.createRadialGradient(w * 0.5, h * 0.45, 0, w * 0.5, h * 0.45, Math.min(w, h) * 0.42)
-    stageGlow.addColorStop(0, 'rgba(102, 188, 126, 0.12)')
-    stageGlow.addColorStop(1, 'rgba(102, 188, 126, 0)')
-    ctx.fillStyle = stageGlow
+    const feltTint = ctx.createLinearGradient(0, 0, 0, h)
+    feltTint.addColorStop(0, 'rgba(18, 52, 30, 0.32)')
+    feltTint.addColorStop(0.45, 'rgba(10, 42, 22, 0.2)')
+    feltTint.addColorStop(1, 'rgba(4, 22, 12, 0.3)')
+    ctx.fillStyle = feltTint
     ctx.fillRect(0, 0, w, h)
+
+    const topLight = ctx.createLinearGradient(0, 0, 0, h * 0.26)
+    topLight.addColorStop(0, 'rgba(255, 220, 160, 0.16)')
+    topLight.addColorStop(0.45, 'rgba(255, 220, 160, 0.05)')
+    topLight.addColorStop(1, 'rgba(255, 220, 160, 0)')
+    ctx.fillStyle = topLight
+    ctx.fillRect(0, 0, w, h)
+
+    const leftLamp = ctx.createRadialGradient(w * 0.22, h * 0.02, 0, w * 0.22, h * 0.02, Math.min(w, h) * 0.12)
+    leftLamp.addColorStop(0, 'rgba(255, 230, 170, 0.22)')
+    leftLamp.addColorStop(0.32, 'rgba(255, 220, 150, 0.11)')
+    leftLamp.addColorStop(1, 'rgba(255, 220, 150, 0)')
+    ctx.fillStyle = leftLamp
+    ctx.fillRect(0, 0, w, h)
+
+    const centerLamp = ctx.createRadialGradient(w * 0.5, h * 0.01, 0, w * 0.5, h * 0.01, Math.min(w, h) * 0.13)
+    centerLamp.addColorStop(0, 'rgba(255, 228, 165, 0.18)')
+    centerLamp.addColorStop(0.36, 'rgba(255, 218, 145, 0.09)')
+    centerLamp.addColorStop(1, 'rgba(255, 218, 145, 0)')
+    ctx.fillStyle = centerLamp
+    ctx.fillRect(0, 0, w, h)
+
+    const rightLamp = ctx.createRadialGradient(w * 0.78, h * 0.02, 0, w * 0.78, h * 0.02, Math.min(w, h) * 0.12)
+    rightLamp.addColorStop(0, 'rgba(255, 230, 170, 0.22)')
+    rightLamp.addColorStop(0.32, 'rgba(255, 220, 150, 0.11)')
+    rightLamp.addColorStop(1, 'rgba(255, 220, 150, 0)')
+    ctx.fillStyle = rightLamp
+    ctx.fillRect(0, 0, w, h)
+
+    const edgeShade = ctx.createRadialGradient(w * 0.5, h * 0.46, Math.min(w, h) * 0.28, w * 0.5, h * 0.5, Math.max(w, h) * 0.82)
+    edgeShade.addColorStop(0, 'rgba(0,0,0,0)')
+    edgeShade.addColorStop(0.72, 'rgba(0,0,0,0.06)')
+    edgeShade.addColorStop(1, 'rgba(0,0,0,0.22)')
+    ctx.fillStyle = edgeShade
+    ctx.fillRect(0, 0, w, h)
+  },
+
+  drawCoverImage(ctx, image, w, h) {
+    const sourceWidth = image.width || image.naturalWidth || 1
+    const sourceHeight = image.height || image.naturalHeight || 1
+    const sourceRatio = sourceWidth / sourceHeight
+    const targetRatio = w / h
+
+    let sx = 0
+    let sy = 0
+    let sw = sourceWidth
+    let sh = sourceHeight
+
+    if (sourceRatio > targetRatio) {
+      sw = sourceHeight * targetRatio
+      sx = (sourceWidth - sw) / 2
+    } else {
+      sh = sourceWidth / targetRatio
+      sy = (sourceHeight - sh) / 2
+    }
+
+    ctx.drawImage(image, sx, sy, sw, sh, 0, 0, w, h)
   },
 
   drawDice3D(ctx, dice) {
