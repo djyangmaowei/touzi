@@ -1,61 +1,65 @@
-# 🎲 摇骰子 (Touzi)
+# 🎲 3D摇骰子 (微信小程序)
 
-一个沉浸式 3D 摇骰子 H5 应用，专为朋友聚会大话骰/吹牛玩家设计。支持 1-10 个骰子，真实音效，手机竖屏体验。
+一个沉浸式 3D 摇骰子微信小程序，专为朋友聚会大话骰/吹牛玩家设计。支持 1-10 个骰子，真实音效，手机竖屏体验。
 
 ![演示](https://github.com/djyangmaowei/touzi/raw/main/assets/screenshot.png)
 
 ## ✨ 功能特性
 
-- 🎲 **3D 拟真渲染**：Three.js 实现，象牙白骰子，深绿色毛毡桌布
-- 🔊 **真实音效**：从真实视频提取的骰子碰撞声，音画同步
+- 🎲 **3D 拟真渲染**：Canvas 2D 实现 3D 透视效果，象牙白骰子，深绿色高级绒布桌布
+- 🔊 **真实音效**：骰子碰撞声，音画同步
 - 🎛️ **骰子数量**：支持 1-10 个骰子，设置面板快速调节
 - 📱 **手机适配**：竖屏优化，支持屏幕常亮（聚会场景必备）
-- 🎨 **沉浸视觉**：毛玻璃效果、金属质感按钮、绿色数码管字体
+- 🎨 **沉浸视觉**：高级绒布纹理、金属质感按钮、三盏舞台灯光效果
 
 ## 🚀 快速开始
 
-### 本地运行
+### 开发环境
 
+1. 克隆项目
 ```bash
 git clone https://github.com/djyangmaowei/touzi.git
 cd touzi
-# 用浏览器打开 index.html
 ```
 
-或者使用本地服务器：
+2. 使用微信开发者工具打开项目
+   - 下载 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
+   - 选择「导入项目」，指向项目目录
 
-```bash
-python3 -m http.server 8080
-# 访问 http://localhost:8080
-```
+3. 填写你的小程序 AppID（或选择测试号）
 
-### 在线体验
+### 发布流程
 
-> 通过 GitHub Pages 部署后添加链接
+1. 微信开发者工具 → 上传代码
+2. 微信公众平台 → 版本管理 → 提交审核
+3. 审核通过后发布上线
 
 ## 📁 项目结构
 
 ```
 touzi/
-├── index.html          # 主页面
-├── css/
-│   └── style.css       # 样式（毛玻璃、金属按钮）
-├── js/
-│   ├── main.js         # 主逻辑、动画循环
-│   ├── dice.js         # 3D 骰子对象
-│   └── audio.js        # 音效管理
-├── assets/
-│   ├── dice-roll.mp3   # 骰子音效
-│   └── felt-texture.png # 毛毡背景
+├── app.js              # 小程序入口
+├── app.json            # 全局配置
+├── app.wxss            # 全局样式
+├── sitemap.json        # 搜索配置
+├── project.config.json # 项目配置
+├── pages/
+│   └── index/          # 首页
+│       ├── index.js    # 页面逻辑
+│       ├── index.wxml  # 页面结构
+│       └── index.wxss  # 页面样式
+├── assets/             # 资源文件
+│   ├── felt-texture.png
+│   └── settings.svg
 └── design.md           # 设计文档
 ```
 
 ## 🛠️ 技术栈
 
-- **3D 渲染**：Three.js
-- **样式**：原生 CSS（backdrop-filter 毛玻璃效果）
-- **音效**：HTML5 Audio API
-- **屏幕常亮**：Screen Wake Lock API
+- **3D 渲染**：Canvas 2D API（自定义 3D 透视算法）
+- **样式**：WXSS
+- **音效**：微信小程序 InnerAudioContext
+- **屏幕常亮**：wx.setKeepScreenOn
 
 ## 🎯 使用场景
 
@@ -65,12 +69,13 @@ touzi/
 
 ## 📝 更新日志
 
-### v1.0.0 (2026-03-18)
+### v1.0.0 (2026-03-20)
 - ✨ 初始版本发布
-- 🎲 3D 骰子渲染与动画
+- 🎲 Canvas 2D 实现 3D 骰子渲染与动画
 - 🔊 真实骰子音效
 - 🎛️ 骰子数量设置（1-10）
-- 📱 竖屏适配与屏幕常亮
+- 📱 屏幕常亮支持
+- 🎨 高级绒布纹理 + 三盏舞台灯效果
 
 ## 📄 License
 
